@@ -17,21 +17,27 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION
         <title>ChatRoom</title>
     </head>
     <body>
-        <h1>ChatRoom</h1>
-        <main>
-            <div id="container">
-                <div id="message-box"></div>
+        <div id="wrapper">
+            <aside>
                 <div id="user-box"></div>
-            </div>
-            <div id="command-box">
-                <textarea id="content"></textarea>
-                <button class="func-button" id="send" onclick="send()">Send</button>
-            </div>
-            <form id="uploadForm">
-                <input type="file" name="file" id="file">
-                <input type="button" value="Upload" onclick="uploadFile()">
-            </form>
-        </main>
+            </aside>
+            <main>
+                <div id="message-box"></div>
+                <div id="command-box">
+                    <form id="uploadForm">
+                        <label id="file" for="file-input">
+                            <img id="upload-image" src="./src/image/upload.svg">
+                            <input id="file-input" type="file" name="file-input">
+                        </label>
+                        <input id="confirm" type="button" value="Upload" onclick="uploadFile()">
+                    </form>
+                    <textarea id="content"></textarea>
+                    <button id="send" class="func-button" onclick="send()">
+                        <img id="send-image" src="./src/image/send.svg">
+                    </button>
+                </div>
+            </main>
+        </div>
     </body>
 </html>
 
@@ -59,14 +65,17 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION
             case 'login':
                 $('#user-box').html('');
                 data.users.forEach(function (item) {
-                    $('#user-box').append(`<p style="color: grey;">${item}</p>`);
-                });
+                    $('#user-box').append(`<p class="user-dock"><img class="user-image" src="./src/image/users.svg" /><span class="user-text">${item}</span></p>`);});
                 if (data.msg) {
                     $('#message-box').append(`<p style="color: grey;">${data.msg}</p>`);
                 }
                 break;
             case 'message':
-                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span>${data.msg}</p>`);
+                $('#message-box').append(`<p class="message-dock">
+                        <span class="message-user">${data.name}</span>
+                        <span class="message-content">${data.msg}</span>
+                        <span class="message-time">${data.time}</span>
+                    </p>`);
                 break;
             case 'image':
                 $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download><img src="${data.path}"></a></p>`);
