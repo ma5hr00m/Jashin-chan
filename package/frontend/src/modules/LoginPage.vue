@@ -16,11 +16,11 @@
                     </div>
                     <div class="relative h-full w-[calc(100%-400px)] p-10">
                         <h2 class="mb-8 italic text-2xl font-bold text-center text-gray-200">Welcome to Wirror!</h2>
-                        <form id="loginForm" class="relative flex flex-col">
+                        <form id="loginForm" @submit.prevent="login" class="relative flex flex-col">
                             <label fot="username" class="text-base text-gray-300 mb-2">Username</label>
-                            <input type="text" name="username" class=" box-border p-4 h-10 rounded-md text-sm font-medium bg-dark-200 text-gray-300 focus:outline-none focus">
+                            <input type="text" name="username" v-model="username" class=" box-border p-4 h-10 rounded-md text-sm font-medium bg-dark-200 text-gray-300 focus:outline-none focus">
                             <label for="password" class="text-base text-gray-300 mb-2 mt-4">Password</label>
-                            <input type="password" name="password" class=" box-border p-4 h-10 rounded-md text-sm font-medium bg-dark-200 text-gray-300 focus:outline-none focus">
+                            <input type="password" name="password" v-model="password" class=" box-border p-4 h-10 rounded-md text-sm font-medium bg-dark-200 text-gray-300 focus:outline-none focus">
                             <a class="relative w-30 text-sm text-gray-400 mt-1 font-medium" href="javascript: alert('useless function 😋;')">Forget password?</a>
                             <input type="submit" value="Login" class="mt-12 h-10 rounded-md bg-blued text-light-300 font-bold tracking-wider hover:cursor-pointer">
                         </form>
@@ -47,6 +47,7 @@
 
 
 <script>
+import axios from "axios";
 import ShadowCard from '../components/ShadowCard.vue';
 
 export default {
@@ -55,6 +56,8 @@ export default {
     },
     data() {
         return {
+            username: '',
+            password: '',
             isToLogin: false,
             transLink: 'Sign up',
             cardWidth: 900,
@@ -62,6 +65,17 @@ export default {
         };
     },
     methods: {
+        async login() {
+            try {
+                const response = await axios.post('http://localhost:3000/api/login.php', {
+                    username: this.username,
+                    password: this.password,
+                });
+                    console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
         ToRegister() {
             this.transLink = '',
             this.isToLogin = true;
@@ -83,7 +97,7 @@ export default {
 
             setTimeout(() => {
                 this.cardWidth = 900;
-                this.cardHeight = 500;
+                this.cardHeight = 480;
                 document.getElementById('register-body').style.display = 'none';
             });
             setTimeout(() => {
