@@ -16,7 +16,7 @@
                     </div>
                     <div class="relative h-full w-[calc(100%-400px)] p-10">
                         <h2 class="mb-8 italic text-2xl font-bold text-center text-gray-200">Welcome to Wirror!</h2>
-                        <form id="loginForm" @submit.prevent="login" class="relative flex flex-col">
+                        <form id="loginForm" @submit.prevent="login" method="post" class="relative flex flex-col">
                             <label fot="username" class="text-base text-gray-300 mb-2">Username</label>
                             <input type="text" name="username" v-model="username" class=" box-border p-4 h-10 rounded-md text-sm font-medium bg-dark-200 text-gray-300 focus:outline-none focus">
                             <label for="password" class="text-base text-gray-300 mb-2 mt-4">Password</label>
@@ -66,15 +66,25 @@ export default {
     },
     methods: {
         async login() {
-            try {
-                const response = await axios.post('http://localhost:3000/api/login.php', {
-                    username: this.username,
-                    password: this.password,
-                });
-                    console.log(response.data);
-            } catch (error) {
-                console.error(error);
-            }
+            let formData = new FormData();
+            formData.append('username', this.username);
+            formData.append('password', this.password);
+
+            axios.post('http://localhost:8888/api/login.php', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+                if (response.data.status_code === 1) {
+                    this.$router.push('/chatroom');
+                } else {
+                    console.log(response.data.status_message);
+                }
+            })
+            .catch(error => {
+                console.log(error.response.data);
+            });
         },
         ToRegister() {
             this.transLink = '',

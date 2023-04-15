@@ -1,10 +1,12 @@
 <?php  
+session_start();
 include '../db/mysql.php';
+include '../utils/corsSet.php';
 
 $username = $_POST["username"];
 $password = $_POST['password'];
 
-$sql = "SELECT * FROM `usrs` WHERE username = '$username'";  
+$sql = "SELECT * FROM `users` WHERE username = '$username'";  
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -24,11 +26,12 @@ if ($result->num_rows > 0) {
             'status_message' => 'failed',  
         );  
     }  
-}
+} else {  
+    $response = array(
+        'status_code' => 0,  
+        'status_message' => 'failed',  
+    );  
+}  
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE");
-header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
-header('Content-Type: application/json');
-
-echo $username;
+echo json_encode($response);
+//echo 'username: ' . $username;
