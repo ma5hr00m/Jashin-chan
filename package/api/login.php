@@ -18,6 +18,7 @@ if ($result->num_rows > 0) {
 
         $response = array(
             'status_code' => 1,
+            'username' => $username,
             'status_message' => 'success',
         );  
     } else {  

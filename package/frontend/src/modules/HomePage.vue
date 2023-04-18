@@ -1,16 +1,15 @@
 <template>
-    <header class="relative w-full h-16">
-		<HeadBar />
-	</header>
-    <h1>home</h1>
+    <ShadowCard>
+        <h1>chat</h1>
+    </ShadowCard>
 </template>
 
 <script>
-import HeadBar from '../components/HeadBar.vue';
+import ShadowCard from '../components/ShadowCard.vue';
 
 export default {
     components: {
-        HeadBar
+        ShadowCard
     }
 }
 </script>

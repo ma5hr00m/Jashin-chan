@@ -79,7 +79,7 @@ export default {
             })
             .then(response => {
                 if (response.data.status_code === 1) {
-                    this.$router.push('/chatroom');
+                    this.$router.push('/chatroom?username=' + response.data.username);
                 } else {
                     console.log(response.data.status_message);
                 }

@@ -37,4 +37,9 @@
     background-color: #363940;
     border-radius: 8px;
 }
+.body {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
 </style>
