@@ -11,7 +11,7 @@ class WebSocket
     {
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, true);
-        socket_bind($this->socket, 0, 8888);
+        socket_bind($this->socket, 0, 8880);
         socket_listen($this->socket);
 
         $this->socket_list[] = $this->socket;
