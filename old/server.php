@@ -133,7 +133,7 @@ class WebSocket
                     'type' => 'image',
                     'name' => $this->user[$k]['name'] ?? '无名氏',
                     'file' => $msg['filename'],
-                    'path' => 'http://localhost:3000/upload/' . $msg['filename'],
+                    'path' => 'http://localhost:8888/upload/' . $msg['filename'],
                     'time' => date('H:i:s'),
                 ];
                 $this->sendAllUser($res);
@@ -143,7 +143,7 @@ class WebSocket
                     'type' => 'file',
                     'name' => $this->user[$k]['name'] ?? '无名氏',
                     'file' => $msg['filename'],
-                    'path' => 'http://localhost:3000/upload/' . $msg['filename'],
+                    'path' => 'http://localhost:8888/upload/' . $msg['filename'],
                     'time' => date('H:i:s'),
                 ];
                 $this->sendAllUser($res);

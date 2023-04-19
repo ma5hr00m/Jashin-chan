@@ -69,7 +69,7 @@ $username = $_GET['username'];
                 data.users.forEach(function (item) {
                     $('#user-box').append(`<p class="user-dock"><span class="user-text">${data.name}</span></p>`);});
                 if (data.msg) {
-                    $('#message-box').append(`<span class="tip-dock" style="color: grey;">${data.msg}</span>`);
+                    $('#message-box').append(`<p style="color: grey;">${data.msg}</p>`);
                 }
                 break;
             case 'message':
