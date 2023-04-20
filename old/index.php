@@ -26,8 +26,9 @@ $username = $_GET['username'];
             <main>
                 <div id="message-box"></div>
                 <div id="command-box">
-                    <form id="uploadForm" method="post" enctype="multipart/form-data">
+                    <form id="uploadForm" method="post" enctype="multipart/form-data" onclick="document.getElementById('file').click();">
                         <input type="file" id="file" name="file" onchange="uploadFile()">
+                        <img id="upload-image" src="./src/image/upload.svg">
                     </form>
                     <textarea id="content"></textarea>
                     <button id="send" class="func-button" onclick="send()">
@@ -74,9 +75,9 @@ $username = $_GET['username'];
                 break;
             case 'message':
                 $('#message-box').append(`<p class="message-dock">
-                        <span class="message-user">${data.name}</span>
+                        <span class="message-user" style="color: grey;">${data.name}</span>
+                        <span class="message-time" style="color: red;">${data.time}</span>
                         <span class="message-content">${data.msg}</span>
-                        <span class="message-time">${data.time}</span>
                     </p>`);
                 break;
             case 'image':
