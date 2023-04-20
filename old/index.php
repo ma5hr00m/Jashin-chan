@@ -75,7 +75,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
             case 'login':
                 $('#user-box').html('');
                 data.users.forEach(function (item) {
-                    $('#user-box').append(`<p class="user-dock"><span class="user-text">${data.name}</span></p>`);});
+                    $('#user-box').append(`<p class="user-dock"><span class="user-text">${item}</span></p>`);});
                 if (data.msg) {
                     $('#message-box').append(`<span class="tip-dock" style="color: grey;">${data.msg}</span>`);
                 }
