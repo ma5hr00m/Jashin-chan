@@ -105,6 +105,8 @@ $username = $_GET['username'];
     // 发送wsd的message信息
     function send() {
         let content = $('#content').val();
+        // 对输入内容进行转义
+        content = escapeHtml(content);
         $('#content').val('');
         if (!content) {
             return;
@@ -147,5 +149,16 @@ $username = $_GET['username'];
         const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg'];
         const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
         return imageExtensions.includes(extension);
+    }
+
+    function escapeHtml(html) {
+        const escapeChar = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '&': '&amp;',
+            '"': '&quot;',
+            "'": '&#39;',
+        };
+        return html.replace(/[<>&"']/g, m => escapeChar[m]);
     }
 </script>

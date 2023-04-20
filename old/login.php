@@ -6,11 +6,14 @@ session_start();
 $notice = "Please input your username and password";
 
 if($_POST && isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    $sql = "SELECT * FROM `users` WHERE username='$username'";
-    $result = $conn->query($sql);
+    // 使用预处理语句减少 SQL 注入攻击的风险
+    $stmt = $conn->prepare("SELECT * FROM `users` WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -26,8 +29,10 @@ if($_POST && isset($_POST['login'])) {
     } else {
         $notice = "Username $username don't exist.";
     }
+    $stmt -> close();
 }
 ?>
+
 
 
 
