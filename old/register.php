@@ -50,7 +50,6 @@ if(isset($_POST['register'])) {
                 <label id="password-label" class="label">Password</label>
                 <input id="password" class="input" type="password" name="password" required>
                 <span id="notice" class="tip"><?php echo $notice;?></span>
-                <input type="file" name="fileToUpload" id="fileToUpload">
                 <input id="login" type=submit name="register" value="Register">
             </form>
             <span id="register-tip">

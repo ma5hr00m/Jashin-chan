@@ -1,8 +1,15 @@
 <?php
 session_start();
 $username = $_GET['username'];
-
-
+if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['username'] === $_GET['username'] && $_SESSION['loggedin'] == true) {
+} else {
+    // 清除session
+    session_unset();
+    session_destroy();
+    // 跳转登录页面
+    header('Location: /login.php');
+    exit;
+}
 ?>
 
 
