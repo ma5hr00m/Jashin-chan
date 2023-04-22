@@ -1,6 +1,8 @@
 <?php
 session_start();
 $username = $_GET['username'];
+
+/*
 if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['username'] === $_GET['username'] && $_SESSION['loggedin'] == true) {
 } else {
     // 清除session
@@ -10,6 +12,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
     header('Location: /login.php');
     exit;
 }
+*/
 ?>
 
 
@@ -77,7 +80,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
                 data.users.forEach(function (item) {
                     $('#user-box').append(`<p class="user-dock"><span class="user-text">${item}</span></p>`);});
                 if (data.msg) {
-                    $('#message-box').append(`<span class="tip-dock" style="color: grey;">${data.msg}</span>`);
+                    $('#message-box').append(`<span class="tip-dock" style="color: grey;width: 100%; display: flex;">${data.msg}</span>`);
                 }
                 break;
             case 'message':
@@ -88,10 +91,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
                     </p>`);
                 break;
             case 'image':
-                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download="${data.name}"><img src="${data.path}"></a></p>`);
+                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download="${data.file}"><img src="${data.path}"></a></p>`);
                 break;
             case 'file':
-                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download="${data.name}">${data.file}</a></p>`);
+                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download="${data.file}">${data.file}</a></p>`);
                 break;
         }
     };

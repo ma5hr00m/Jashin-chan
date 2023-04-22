@@ -1,15 +1,15 @@
 <?php
+// 引用mysql.php配置 | 开启会话管理
 include 'mysql.php';
-
 session_start();
 
 $notice = "Please input your username and password";
 
+// 处理POST请求
 if($_POST && isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
-    // 使用预处理语句减少 SQL 注入攻击的风险
     $stmt = $conn->prepare("SELECT * FROM `users` WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -21,6 +21,11 @@ if($_POST && isset($_POST['login'])) {
         if($row['password'] == $password) {
             $_SESSION['username'] = $row['username'];
             $_SESSION['loggedin'] = true;
+
+            $stmt = $conn->prepare("UPDATE `users` SET `status` = '1' WHERE `id` = ?");
+            $stmt->bind_param("i", $row['id']);
+            $stmt->execute();
+
             header("Location: index.php?username=$username");
             exit();
         } else {
@@ -34,14 +39,12 @@ if($_POST && isset($_POST['login'])) {
 ?>
 
 
-
-
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login Page</title>
-        <link rel="stylesheet" href="./src/css/login.css">
         <meta charset="utf-8">
+        <link rel="stylesheet" href="./src/css/login.css">
+        <title>Login Page</title>
     </head>
     <body>
         <main>
@@ -54,7 +57,7 @@ if($_POST && isset($_POST['login'])) {
                 <a id="forget" class="tip" href="javascript:alert('Not supported yet.');">Forget your password?</a>
                 <input id="password" class="input" type="password" name="password" required>
                 <span id="notice" class="tip"><?php echo $notice;?></span>
-                <input id="login" type=submit name="login" value="Login">
+                <input id="login" type="submit" name="login" value="Login">
             </form>
             <span id="register-tip">
                 Don't have an account? <a id="link" href="register.php">Sign up</a>
