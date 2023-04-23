@@ -1,4 +1,5 @@
 <?php
+// 引用mysql.php配置
 include 'mysql.php';
 
 $notice = "Please input your username and password";
@@ -35,7 +36,7 @@ if(isset($_POST['register'])) {
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="./src/css/login.css">
+        <link rel="stylesheet" href="./public/src/css/login.css">
         <title>Register Page</title>
     </head>
     <body>

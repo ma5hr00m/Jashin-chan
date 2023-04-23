@@ -15,7 +15,7 @@ class WebSocket
         // 创建socket对象 | 设置socket选项 | 绑定监听端口 | 开始监听客户端连接
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, true);
-        socket_bind($this->socket, 0, 8880);
+        socket_bind($this->socket, 0, 8091);
         socket_listen($this->socket);
 
         // 保存所有已连接用户

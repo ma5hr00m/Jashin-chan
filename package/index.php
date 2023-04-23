@@ -1,26 +1,33 @@
 <?php
 session_start();
-$username = $_GET['username'];
 
-/*
-if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['username'] === $_GET['username'] && $_SESSION['loggedin'] == true) {
+if (!isset($_SESSION['username'])) {
 } else {
-    // 清除session
     session_unset();
     session_destroy();
-    // 跳转登录页面
-    header('Location: /login.php');
-    exit;
+    header('Location: login.php');
+    exit();
 }
-*/
+
+$username = $_GET['username'];
+
+
+// if (isset($_SESSION['username']) && $_SESSION['username'] === $_GET['username'] && $_SESSION['loggedin'] == true) {
+// } else {
+//     session_unset();
+//     session_destroy();
+//     header('Location: /login.php');
+//     exit;
+// }
+
 ?>
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-        <meta charset="UTF-8">
-        <link type="text/css" rel="stylesheet" href="./src/css/index.css">
+        <meta charset="utf-8">
+        <link type="text/css" rel="stylesheet" href="./public/src/css/index.css">
         <title>ChatRoom</title>
     </head>
     <body>
@@ -38,11 +45,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
                 <div id="command-box">
                     <form id="uploadForm" method="post" enctype="multipart/form-data" onclick="document.getElementById('file').click();">
                         <input type="file" id="file" name="file" onchange="uploadFile()">
-                        <img id="upload-image" src="./src/image/upload.svg">
+                        <img id="upload-image" src="./public/src/image/upload.svg">
                     </form>
                     <textarea id="content"></textarea>
                     <button id="send" class="func-button" onclick="send()">
-                        <img id="send-image" src="./src/image/send.svg">
+                        <img id="send-image" src="./public/src/image/send.svg">
                     </button>
                 </div>
             </main>
@@ -52,9 +59,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
 
 <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 <script type="text/javascript">
-
     // 连接 websocket
-    let ws = new WebSocket('ws://localhost:8880');
+    let ws = new WebSocket('ws://localhost:8091');
 
     const params = new URLSearchParams(window.location.search);
     const username = params.get('username');
@@ -72,10 +78,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
     ws.onmessage = function (event) {
         let data = JSON.parse(event.data);
 
-        // 根据信息分类添加元素
+        // 根据消息类型添加元素
         switch (data.type) {
-            case 'close':
             case 'login':
+            case 'close':
                 $('#user-box').html('');
                 data.users.forEach(function (item) {
                     $('#user-box').append(`<p class="user-dock"><span class="user-text">${item}</span></p>`);});
@@ -100,7 +106,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
     };
 
 
-    // 关闭ws通信添加对应元素
+    // 关闭ws通信 | 添加对应元素
     ws.onclose = function (event) {
         $('#message-box').append(`<p><span style="color: grey;">${now.getHours()}:${now.getMinutes()}</span><span style="color: red;">Server closed.</span></p>`);
     };
@@ -129,18 +135,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
 
     // 文件上传到upload.php
     function uploadFile() {
-    // 获取表单和文件元素
         const form = document.getElementById('uploadForm');
         const file = document.getElementById('file').files[0];
 
-        // 创建XMLHttpRequest对象和FormData对象
-        const xhr = new XMLHttpRequest();
         const formData = new FormData(form);
         formData.append('file', file);
 
-        // 发送POST请求
-        xhr.open('POST', 'upload.php', true);
-        xhr.send(formData);
+        fetch('http://localhost:8090/upload.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error(error));
 
         if ( isImage(file.name) ){
             ws.send(JSON.stringify({
@@ -155,12 +162,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['username']) && $_SESSION['u
         }
     }
 
+    // 判断文件是否为图片
     function isImage(filename) {
-        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg'];
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.svg'];
         const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
+        
         return imageExtensions.includes(extension);
     }
 
+    // 转义html元素
     function escapeHtml(html) {
         const escapeChar = {
             '<': '&lt;',

@@ -1,5 +1,7 @@
 .idea
+.vscode
 .git
 test
+
 
 package/mysql.php

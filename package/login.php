@@ -1,11 +1,8 @@
 <?php
-// 引用mysql.php配置 | 开启会话管理
 include 'mysql.php';
-session_start();
 
 $notice = "Please input your username and password";
 
-// 处理POST请求
 if($_POST && isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
@@ -19,6 +16,8 @@ if($_POST && isset($_POST['login'])) {
         $row = $result->fetch_assoc();
 
         if($row['password'] == $password) {
+            session_start();
+
             $_SESSION['username'] = $row['username'];
             $_SESSION['loggedin'] = true;
 
@@ -43,7 +42,7 @@ if($_POST && isset($_POST['login'])) {
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="./src/css/login.css">
+        <link rel="stylesheet" href="./public/src/css/login.css">
         <title>Login Page</title>
     </head>
     <body>
