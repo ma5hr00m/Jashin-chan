@@ -1,5 +1,5 @@
 <?php
-include 'mysql.php';
+include_once 'mysql.php';
 session_start();
 
 $notice = "Please input your username and password";
@@ -7,7 +7,7 @@ $notice = "Please input your username and password";
 if($_POST && isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
-
+    
     $stmt = $conn->prepare("SELECT * FROM `users` WHERE username = ?"); 
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -18,8 +18,7 @@ if($_POST && isset($_POST['login'])) {
 
         if($row['password'] == $password) {
             $_SESSION['username'] = $row['username'];
-            $_SESSION['loggedin'] = true;
-            
+
             header("Location: index.php?username=$username");
             exit();
         } else {

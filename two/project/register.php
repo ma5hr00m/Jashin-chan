@@ -1,14 +1,11 @@
 <?php
-// 引用mysql.php配置
-include 'mysql.php';
+include_once 'mysql.php';
 
 $notice = "Please input your username and password";
 
 if(isset($_POST['register'])) {
-
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
-    $status = 0;
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
@@ -18,8 +15,8 @@ if(isset($_POST['register'])) {
     if ($result->num_rows > 0) {
         $notice = "The username is already taken!";
     } else {
-        $stmt = $conn->prepare("INSERT INTO users (username, password, status) VALUES (?, ?, ?)");
-        $stmt->bind_param("ssi", $username, $password, $status);
+        $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $password);
         if ($stmt->execute()) {
             header("Location: login.php");
             exit();

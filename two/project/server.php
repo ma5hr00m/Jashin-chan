@@ -13,7 +13,7 @@ class WebSocket {
         // 创建socket对象 | 设置socket选项 | 绑定监听端口 | 开始监听客户端连接
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, true);
-        socket_bind($this->socket, 0, 8091);
+        socket_bind($this->socket, 0, 4010);
         socket_listen($this->socket);
 
         // 保存已连接用户
@@ -153,7 +153,7 @@ class WebSocket {
                     'type' => 'image',
                     'name' => $this->user[$k]['name'] ?? 'anonymous',
                     'file' => $msg['filename'],
-                    'path' => 'http://localhost:8090/upload/' . $msg['filename'],
+                    'path' => 'http://localhost:4000/upload/' . $msg['filename'],
                     'time' => date('H:i:s'),
                 ];
                 $this->sendAllUser($res);
@@ -165,7 +165,7 @@ class WebSocket {
                     'type' => 'file',
                     'name' => $this->user[$k]['name'] ?? '无名氏',
                     'file' => $msg['filename'],
-                    'path' => 'http://localhost:8090/upload/' . $msg['filename'],
+                    'path' => 'http://localhost:4000/upload/' . $msg['filename'],
                     'time' => date('H:i:s'),
                 ];
                 $this->sendAllUser($res);

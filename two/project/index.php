@@ -1,24 +1,17 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['username'])) {
-} else {
-    session_unset();
-    session_destroy();
-    header('Location: login.php');
-    exit();
-}
-
+$iniFile = "config.ini";
+$config = parse_ini_file($iniFile, true);
 $username = $_GET['username'];
 
-if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username'] || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['username']) || ($_SESSION['username'] !== $_GET['username'])) {
     session_unset();
     session_destroy();
     header('Location: /login.php');
     exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -43,11 +36,11 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
                 <div id="command-box">
                     <form id="uploadForm" method="post" enctype="multipart/form-data" onclick="document.getElementById('file').click();">
                         <input type="file" id="file" name="file" onchange="uploadFile()">
-                        <img id="upload-image" src="./public/src/image/upload.svg">
+                        <img id="upload-image" src="./src/image/upload.svg">
                     </form>
                     <textarea id="content"></textarea>
                     <button id="send" class="func-button" onclick="send()">
-                        <img id="send-image" src="./public/src/image/send.svg">
+                        <img id="send-image" src="./src/image/send.svg">
                     </button>
                 </div>
             </main>
@@ -57,14 +50,21 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
 
 <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 <script type="text/javascript">
-    // 连接 websocket
-    let ws = new WebSocket('ws://localhost:8091');
+
+    let websocketIP = "<?php echo $config['websocket']['ip']; ?>";
+    let websocketPort = "<?php echo $config['websocket']['port']; ?>";
+    let websocketAddress = 'ws://' + websocketIP + ':' + websocketPort;
+
+    let webIP = "<?php echo $config['web']['ip']; ?>";
+    let webPort = "<?php echo $config['web']['port']; ?>";
+    let uploadAddress = 'http://' + webIP + ':' + webPort + '/upload.php';
 
     const params = new URLSearchParams(window.location.search);
     const username = params.get('username');
     const now = new Date();
 
-    // 发送login信息
+    let ws = new WebSocket(websocketAddress);
+
     ws.onopen = function (event) {
         ws.send(JSON.stringify({
             type: 'login',
@@ -72,11 +72,12 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
         }))
     }
 
-    //接受信息
     ws.onmessage = function (event) {
+        
+        setTimeout(function() {}, 1000);
+
         let data = JSON.parse(event.data);
 
-        // 根据消息类型添加元素
         switch (data.type) {
             case 'login':
             case 'close':
@@ -84,42 +85,59 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
                 data.users.forEach(function (item) {
                     $('#user-box').append(`<p class="user-dock"><span class="user-text">${item}</span></p>`);});
                 if (data.msg) {
-                    $('#message-box').append(`<span class="tip-dock" style="color: grey;width: 100%; display: flex;">${data.msg}</span>`);
+                    $('#message-box').append(`
+                        <span class="tip-dock" style="color: grey;width: 100%; display: flex;">${data.msg}</span>
+                    `);
                 }
                 break;
             case 'message':
-                $('#message-box').append(`<p class="message-dock">
+                $('#message-box').append(`
+                    <p class="message-dock">
                         <span class="message-user" style="color: grey;">${data.name}</span>
                         <span class="message-time" style="color: red;">${data.time}</span>
                         <span class="message-content">${data.msg}</span>
                     </p>`);
                 break;
             case 'image':
-                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download="${data.file}"><img src="${data.path}"></a></p>`);
+                $('#message-box').append(`
+                    <p>
+                        <span style="color: grey;">${data.name}</span>
+                        <span style="color: red;">${data.time}</span>
+                        <a href="${data.path}" download="${data.file}">
+                            <img src="${data.path}">
+                        </a>
+                    </p>
+                `);
                 break;
             case 'file':
-                $('#message-box').append(`<p><span style="color: grey;">${data.name}</span><span style="color: red;">${data.time}</span><a href="${data.path}" download="${data.file}">${data.file}</a></p>`);
+                $('#message-box').append(`
+                    <p>
+                        <span style="color: grey;">${data.name}</span>
+                        <span style="color: red;">${data.time}</span>
+                        <a href="${data.path}" download="${data.file}">${data.file}</a>
+                    </p>
+                `);
                 break;
         }
     };
 
-
-    // 关闭ws通信 | 添加对应元素
     ws.onclose = function (event) {
-        $('#message-box').append(`<p><span style="color: grey;">${now.getHours()}:${now.getMinutes()}</span><span style="color: red;">Server closed.</span></p>`);
+        $('#message-box').append(`
+            <p>
+                <span style="color: grey;">${now.getHours()}:${now.getMinutes()}</span>
+                <span style="color: red;">Server closed.</span>
+            </p>
+        `);
     };
 
-    // 绑定快捷键发送信息
     document.onkeydown = function (event) {
         if (event.keyCode === 13) {
             send();
         }
     }
 
-    // 发送wsd的message信息
     function send() {
         let content = $('#content').val();
-        // 对输入内容进行转义
         content = escapeHtml(content);
         $('#content').val('');
         if (!content) {
@@ -131,7 +149,6 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
         }));
     }
 
-    // 文件上传到upload.php
     function uploadFile() {
         const form = document.getElementById('uploadForm');
         const file = document.getElementById('file').files[0];
@@ -139,13 +156,13 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
         const formData = new FormData(form);
         formData.append('file', file);
 
-        fetch('http://localhost:8090/upload.php', {
+        fetch(uploadAddress, {
             method: 'POST',
             body: formData
         })
         .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error(error));
+        .then(data => alert(data))
+        .catch(error => alert(error));
 
         if ( isImage(file.name) ){
             ws.send(JSON.stringify({
@@ -160,7 +177,6 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
         }
     }
 
-    // 判断文件是否为图片
     function isImage(filename) {
         const imageExtensions = ['.jpg', '.jpeg', '.png', '.svg'];
         const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
@@ -168,7 +184,6 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
         return imageExtensions.includes(extension);
     }
 
-    // 转义html元素
     function escapeHtml(html) {
         const escapeChar = {
             '<': '&lt;',
@@ -179,4 +194,5 @@ if (!isset($_SESSION['username']) || $_SESSION['username'] !== $_GET['username']
         };
         return html.replace(/[<>&"']/g, m => escapeChar[m]);
     }
+
 </script>
