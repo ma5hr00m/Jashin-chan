@@ -73,7 +73,7 @@ if (!isset($_SESSION['username']) || ($_SESSION['username'] !== $_GET['username'
     }
 
     ws.onmessage = function (event) {
-        
+
         setTimeout(function() {}, 1000);
 
         let data = JSON.parse(event.data);

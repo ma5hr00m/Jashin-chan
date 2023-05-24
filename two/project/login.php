@@ -15,7 +15,6 @@ if($_POST && isset($_POST['login'])) {
 
     if($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-
         if($row['password'] == $password) {
             $_SESSION['username'] = $row['username'];
 
