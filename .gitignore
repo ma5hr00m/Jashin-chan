@@ -2,6 +2,4 @@
 .vscode
 .git
 test
-./two/project/conf.ini
-
-package/mysql.php
+./two/project/config.ini
